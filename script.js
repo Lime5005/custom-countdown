@@ -18,6 +18,9 @@ let countdownValue = Date // Date is also a data type like String
 
 let countdownActive
 
+// localStorage:
+let savedCountdown // an object
+
 const second = 1000 // 1 second is 1000 milliseconds
 const minute = second * 60
 const hour = minute * 60
@@ -39,7 +42,7 @@ function updateDOM() {
         const hours = Math.floor(distance % day / hour) // % is reminder operator
         const minutes = Math.floor(distance % hour / minute)
         const seconds = Math.floor(distance % minute / second)
-        console.log(days, hours, minutes, seconds);
+            //console.log(days, hours, minutes, seconds);
 
         // Hide the input and show the countdown:
         inputContainer.hidden = true
@@ -70,7 +73,15 @@ function updateCountdown(e) {
         //console.log(e); // see srcElement-> 0:input#title -> validity -> value
     countdownTitle = e.srcElement[0].value
     countdownDate = e.srcElement[1].value
-        // check for valid input:
+
+    savedCountdown = {
+        title: countdownTitle,
+        date: countdownDate
+    }
+
+    localStorage.setItem('countdown', JSON.stringify(savedCountdown))
+
+    // check for valid input:
     if (countdownDate === '') {
         alert('Please select a date for countdown.')
     } else {
@@ -92,9 +103,25 @@ function reset() {
     // Reset the original values:
     countdownTitle = ''
     countdownDate = ''
+    localStorage.removeItem('countdown')
+}
+
+function restorePreviousCountdown() {
+    // If there is a localStorage data:
+    if (localStorage.getItem('countdown')) {
+        inputContainer.hidden = true
+        savedCountdown = JSON.parse(localStorage.getItem('countdown'))
+        countdownTitle = savedCountdown.title
+        countdownDate = savedCountdown.date
+        countdownValue = new Date(countdownDate).getTime()
+        updateDOM()
+    }
 }
 
 // Event listeners:
 countdownForm.addEventListener('submit', updateCountdown)
 countdownBtn.addEventListener('click', reset)
 completeBtn.addEventListener('click', reset)
+
+// On load, check the localStorage:
+restorePreviousCountdown()
