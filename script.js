@@ -14,7 +14,7 @@ const completeBtn = document.getElementById('complete-button')
 
 let countdownTitle = ''
 let countdownDate = ''
-let countdownValue = Date // Date is also a data type like String
+let countdownValue = new Date() // Date is also a data type like String
 
 let countdownActive
 
